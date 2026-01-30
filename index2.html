@@ -6,7 +6,7 @@
     <title>결정사 찾기 테스트</title>
     <style>
         :root { --primary-color: #ff4d6d; --bg-color: #f8f9fa; }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding-bottom: 120px; } /* 배너 공간 확보 */
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding-bottom: 120px; } 
         
         #container { 
             width: 90%; 
@@ -25,34 +25,31 @@
             background: linear-gradient(135deg, #ff4d6d 0%, #ff85a1 100%);
             display: flex; justify-content: center; align-items: center;
         }
-        .banner-text { color: white; font-size: 1.2rem; font-weight: bold; z-index: 1; }
+        .banner-text { color: white; font-size: 1.2rem; font-weight: bold; }
 
         .content-padding { padding: 30px 25px; }
 
         /* 외부 광고 배너 영역 (하단 고정) */
         #external-ad-area {
-            display: none; /* 초기 시작페이지에선 숨김 */
             position: fixed;
             bottom: 0; left: 0;
-            width: 100%;
-            height: 100px;
-            background-color: #e9ecef; /* 배너 영역 색상 */
+            width: 100%; height: 100px;
+            background-color: #e9ecef;
             border-top: 1px solid #dee2e6;
-            display: none; /* JS로 제어 */
-            justify-content: center;
-            align-items: center;
-            color: #adb5bd;
-            font-weight: bold;
-            font-size: 0.9rem;
-            z-index: 1000;
+            display: none; /* 초기 숨김 */
+            justify-content: center; align-items: center;
+            color: #adb5bd; font-weight: bold; z-index: 1000;
         }
 
         .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-bottom: 25px; }
         #progress { width: 0%; height: 100%; background: var(--primary-color); border-radius: 10px; transition: width 0.3s; }
         
+        /* 섹션 제어 */
         .question-box { display: none; }
-        .active { display: block; }
+        .question-box.active { display: block; }
         
+        #result { display: none; } /* 결과창은 기본적으로 숨김 */
+
         .btn-list { display: flex; flex-direction: column; gap: 10px; }
         button { padding: 16px; border: 1px solid #ddd; border-radius: 12px; background: white; cursor: pointer; font-size: 1rem; transition: 0.2s; }
         button:hover { border-color: var(--primary-color); background: #fff0f3; }
@@ -61,13 +58,13 @@
         .prev-btn { background: none; border: none; color: #999; text-decoration: underline; font-size: 0.9rem; cursor: pointer; }
 
         .result-name { font-size: 2.2rem; color: var(--primary-color); font-weight: bold; margin: 20px 0; }
-        .retry-btn { background: var(--primary-color); color: white; border: none; width: 80%; font-weight: bold; margin-top: 20px; cursor: pointer; border-radius: 12px; padding: 15px; }
+        .retry-btn { background: var(--primary-color); color: white; border: none; width: 100%; font-weight: bold; margin-top: 20px; cursor: pointer; border-radius: 12px; padding: 15px; }
     </style>
 </head>
 <body>
 
 <div id="container">
-    <div id="start-screen" class="active">
+    <div id="start-screen">
         <div class="banner-area"><div class="banner-text">MATCHING TEST</div></div>
         <div class="content-padding">
             <h1 style="color: var(--primary-color); font-size: 3rem; margin: 10px 0;">🔍</h1>
@@ -124,13 +121,18 @@
     function startQuiz() {
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('quiz').style.display = 'block';
-        document.getElementById('external-ad-area').style.display = 'flex'; // 배너 표시
+        document.getElementById('result').style.display = 'none'; // 확실히 숨김
+        document.getElementById('external-ad-area').style.display = 'flex'; 
         showStep(1);
     }
 
     function showStep(step) {
-        document.querySelectorAll('.question-box').forEach(box => box.classList.remove('active'));
-        document.getElementById('q' + step).classList.add('active');
+        const questions = document.querySelectorAll('.question-box');
+        questions.forEach(q => q.classList.remove('active'));
+        
+        const targetQ = document.getElementById('q' + step);
+        if(targetQ) targetQ.classList.add('active');
+
         document.getElementById('progress').style.width = (step / 8) * 100 + '%';
         document.getElementById('nav-container').style.display = step > 1 ? 'flex' : 'none';
         currentStep = step;
@@ -139,18 +141,23 @@
 
     function next(step, value) {
         answers['q' + step] = value;
-        if (step < 8) showStep(step + 1);
-        else calculateResult();
+        if (step < 8) {
+            showStep(step + 1);
+        } else {
+            calculateResult();
+        }
     }
 
-    function prev() { if (currentStep > 1) showStep(currentStep - 1); }
+    function prev() {
+        if (currentStep > 1) showStep(currentStep - 1);
+    }
 
     function calculateResult() {
         document.getElementById('quiz').style.display = 'none';
         document.getElementById('result').style.display = 'block';
-        document.getElementById('external-ad-area').style.display = 'flex'; // 결과페이지에서도 유지
         
         let res = "";
+        // 결과 판정 로직
         if (answers.q3 === '그 외 지역' || answers.q3 === '해외') res = "듀오";
         else if (answers.q7 === '남전문') {
             const pool = ['듀오', '가연', '노블마리아주', '우연', '바로연', '수현'];
