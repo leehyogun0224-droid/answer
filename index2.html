@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나와 맞는 결정사는? | 결정사 찾기 테스트</title>
+    <meta property="og:title" content="나와 맞는 결정사는? [결정사 찾기 테스트]">
+    <meta property="og:description" content="나의 조건과 성향에 딱 맞는 결혼정보회사를 찾아보세요!">
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #container {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        #progress {
+            width: 0%;
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .question-box { display: none; }
+        .active { display: block; }
+
+        h2 { font-size: 1.4rem; margin-bottom: 25px; word-break: keep-all; }
+
+        .btn-list { display: flex; flex-direction: column; gap: 12px; }
+
+        button {
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            border-color: var(--primary-color);
+            background: #fff0f3;
+        }
+
+        #result { display: none; }
+        .result-name {
+            font-size: 2rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .share-btn {
+            margin-top: 20px;
+            background: #fee500; /* 카카오 느낌 */
+            border: none;
+            width: 100%;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="start-screen" class="active">
+        <h1 style="color: var(--primary-color);">💌</h1>
+        <h2>나와 맞는 결정사는?<br>[결정사 찾기 테스트]</h2>
+        <p>몇 가지 질문으로 당신에게 딱 맞는<br>결혼정보회사를 추천해 드립니다.</p>
+        <button onclick="startQuiz()" style="background: var(--primary-color); color: white; width: 100%; border: none; font-weight: bold; margin-top: 20px;">테스트 시작하기</button>
+    </div>
+
+    <div id="quiz" style="display: none;">
+        <div class="progress-bar"><div id="progress"></div></div>
+        
+        <div id="q1" class="question-box active">
+            <h2>1. 당신의 성별은 무엇입니까?</h2>
+            <div class="btn-list">
+                <button onclick="next(1, '남')">남</button>
+                <button onclick="next(1, '여')">여</button>
+            </div>
+        </div>
+
+        <div id="q2" class="question-box">
+            <h2>2. 당신의 나이대는?</h2>
+            <div class="btn-list">
+                <button onclick="next(2, '20대')">20대</button>
+                <button onclick="next(2, '30대')">30대</button>
+                <button onclick="next(2, '40대')">40대</button>
+            </div>
+        </div>
+
+        <div id="q3" class="question-box">
+            <h2>3. 거주 지역은 어디입니까?</h2>
+            <div class="btn-list">
+                <button onclick="next(3, '서울/경기')">서울/경기</button>
+                <button onclick="next(3, '그 외 지역')">그 외 지역</button>
+                <button onclick="next(3, '해외')">해외</button>
+            </div>
+        </div>
+
+        <div id="q4" class="question-box">
+            <h2>4. 가장 우선시 하는 상대의 조건은?</h2>
+            <div class="btn-list">
+                <button onclick="next(4, '재력')">재력</button>
+                <button onclick="next(4, '외모')">외모</button>
+                <button onclick="next(4, '성격')">성격</button>
+                <button onclick="next(4, '직업')">직업</button>
+                <button onclick="next(4, '집안')">집안</button>
+            </div>
+        </div>
+
+        <div id="q5" class="question-box">
+            <h2>5. 결정사에 가장 기대하는 것은?</h2>
+            <div class="btn-list">
+                <button onclick="next(5, '다다익선')">다다익선 (최대한 많은 소개)</button>
+                <button onclick="next(5, '양보다 질')">양보다 질 (엄선된 소개)</button>
+                <button onclick="next(5, '케어')">매니저의 섬세한 케어</button>
+                <button onclick="next(5, '가격')">저렴한 가격</button>
+            </div>
+        </div>
+
+        <div id="q6" class="question-box">
+            <h2>6. 선호하는 진행 방식은?</h2>
+            <div class="btn-list">
+                <button onclick="next(6, '횟수제')">횟수제</button>
+                <button onclick="next(6, '기간제')">기간제</button>
+                <button onclick="next(6, '매칭당')">상대 있을 때마다 비용 지급</button>
+            </div>
+        </div>
+
+        <div id="q7" class="question-box">
+            <h2>7. 당신은 전문직 입니까?</h2>
+            <div class="btn-list">
+                <button onclick="next(7, '남전문')">남자 전문직</button>
+                <button onclick="next(7, '여전문')">여자 전문직</button>
+                <button onclick="next(7, '아님')">전문직 아님</button>
+            </div>
+        </div>
+
+        <div id="q8" class="question-box">
+            <h2>8. 결정사 비용 수용 범위는?</h2>
+            <div class="btn-list">
+                <button onclick="next(8, '100미만')">100만원 미만</button>
+                <button onclick="next(8, '300미만')">300만원 미만</button>
+                <button onclick="next(8, '300-500')">300-500만원</button>
+                <button onclick="next(8, '500-1000')">500-1000만원</button>
+                <button onclick="next(8, '1000이상')">1000만원 이상</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result">
+        <h2>당신에게 딱 맞는 결정사는?</h2>
+        <div class="result-name" id="agency-name">분석 중...</div>
+        <p id="result-desc">당신의 조건과 성향을 분석한 최적의 결과입니다.</p>
+        <button class="share-btn" onclick="location.reload()">테스트 다시하기</button>
+    </div>
+</div>
+
+<script>
+    let answers = {};
+    const totalQ = 8;
+
+    function startQuiz() {
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('quiz').style.display = 'block';
+    }
+
+    function next(qNum, value) {
+        answers['q' + qNum] = value;
+        
+        // 프로그레스 바 업데이트
+        document.getElementById('progress').style.width = (qNum / totalQ) * 100 + '%';
+
+        if (qNum < totalQ) {
+            document.getElementById('q' + qNum).classList.remove('active');
+            document.getElementById('q' + (qNum + 1)).classList.add('active');
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+
+        let result = "";
+
+        // 로직 판정 (요청하신 우선순위 적용)
+        
+        // 1. 3번 문항 그 외 지역, 해외 -> 듀오
+        if (answers.q3 === '그 외 지역' || answers.q3 === '해외') {
+            result = "듀오";
+        }
+        // 2. 7번 문항 남자 전문직 -> 랜덤 풀
+        else if (answers.q7 === '남전문') {
+            const pool = ['듀오', '가연', '노블마리아주', '우연', '바로연', '수현'];
+            result = pool[Math.floor(Math.random() * pool.length)];
+        }
+        // 3. 6번 문항 매칭당 지급 -> 클럽센트 혹은 유니노블 랜덤
+        else if (answers.q6 === '매칭당') {
+            result = Math.random() > 0.5 ? "클럽센트" : "유니노블";
+        }
+        // 4. 1번 여자, 2번 20대, 8번 1000만원 이상 -> 제이노블
+        else if (answers.q1 === '여' && answers.q2 === '20대' && answers.q8 === '1000이상') {
+            result = "제이노블";
+        }
+        // 5. 5번 케어 + 8번 300미만/300-500 -> 우연
+        else if (answers.q5 === '케어' && (answers.q8 === '300미만' || answers.q8 === '300-500')) {
+            result = "우연";
+        }
+        // 6. 3번 서울/경기 + 6번 기간제 + 8번 (300미만/300-500/500-1000) -> 가연
+        else if (answers.q3 === '서울/경기' && answers.q6 === '기간제' && 
+                (answers.q8 === '300미만' || answers.q8 === '300-500' || answers.q8 === '500-1000')) {
+            result = "가연";
+        }
+        // 기본값 (조건에 해당 없을 시)
+        else {
+            result = "가연"; 
+        }
+
+        document.getElementById('agency-name').innerText = result;
+    }
+</script>
+
+</body>
+</html>
