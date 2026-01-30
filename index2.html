@@ -6,7 +6,7 @@
     <title>결정사 찾기 테스트</title>
     <style>
         :root { --primary-color: #ff4d6d; --bg-color: #f8f9fa; }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding-bottom: 120px; } /* 배너 공간 확보 */
         
         #container { 
             width: 90%; 
@@ -15,50 +15,43 @@
             border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
             text-align: center;
-            overflow: hidden; /* 배너가 튀어나오지 않게 */
-        }
-
-        /* 스타일로 만든 배너 영역 */
-        .banner-area {
-            width: 100%;
-            height: 150px;
-            background: linear-gradient(135deg, #ff4d6d 0%, #ff85a1 100%);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow: hidden;
+            position: relative;
         }
 
-        /* 배너 안의 꾸밈 요소 */
-        .banner-area::before {
-            content: "";
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            top: -50px;
-            left: -50px;
+        /* 상단 스타일 배너 */
+        .banner-area {
+            width: 100%; height: 150px;
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff85a1 100%);
+            display: flex; justify-content: center; align-items: center;
         }
-
-        .banner-text {
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            z-index: 1;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        .banner-text { color: white; font-size: 1.2rem; font-weight: bold; z-index: 1; }
 
         .content-padding { padding: 30px 25px; }
+
+        /* 외부 광고 배너 영역 (하단 고정) */
+        #external-ad-area {
+            display: none; /* 초기 시작페이지에선 숨김 */
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #e9ecef; /* 배너 영역 색상 */
+            border-top: 1px solid #dee2e6;
+            display: none; /* JS로 제어 */
+            justify-content: center;
+            align-items: center;
+            color: #adb5bd;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
 
         .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-bottom: 25px; }
         #progress { width: 0%; height: 100%; background: var(--primary-color); border-radius: 10px; transition: width 0.3s; }
         
         .question-box { display: none; }
         .active { display: block; }
-        h2 { font-size: 1.25rem; margin-bottom: 20px; line-height: 1.4; word-break: keep-all; }
         
         .btn-list { display: flex; flex-direction: column; gap: 10px; }
         button { padding: 16px; border: 1px solid #ddd; border-radius: 12px; background: white; cursor: pointer; font-size: 1rem; transition: 0.2s; }
@@ -67,23 +60,19 @@
         .nav-btns { margin-top: 20px; display: flex; justify-content: center; }
         .prev-btn { background: none; border: none; color: #999; text-decoration: underline; font-size: 0.9rem; cursor: pointer; }
 
-        #result { display: none; padding-bottom: 30px; }
         .result-name { font-size: 2.2rem; color: var(--primary-color); font-weight: bold; margin: 20px 0; }
-        .retry-btn { background: var(--primary-color); color: white; border: none; width: 80%; font-weight: bold; margin-top: 20px; }
+        .retry-btn { background: var(--primary-color); color: white; border: none; width: 80%; font-weight: bold; margin-top: 20px; cursor: pointer; border-radius: 12px; padding: 15px; }
     </style>
 </head>
 <body>
 
 <div id="container">
     <div id="start-screen" class="active">
-        <div class="banner-area">
-            <div class="banner-text">MATCHING TEST</div>
-        </div>
+        <div class="banner-area"><div class="banner-text">MATCHING TEST</div></div>
         <div class="content-padding">
             <h1 style="color: var(--primary-color); font-size: 3rem; margin: 10px 0;">🔍</h1>
             <h2>나와 맞는 결정사는?<br>[결정사 찾기 테스트]</h2>
-            <p style="color: #666; font-size: 0.95rem; margin-bottom: 30px;">당신의 성향을 분석하여<br>최적의 결혼정보회사를 추천합니다.</p>
-            <button onclick="startQuiz()" style="background: var(--primary-color); color: white; width: 100%; border: none; font-weight: bold; height: 60px; font-size: 1.1rem;">테스트 시작하기</button>
+            <button onclick="startQuiz()" style="background: var(--primary-color); color: white; width: 100%; border: none; font-weight: bold; height: 60px; font-size: 1.1rem; border-radius: 12px; cursor: pointer;">테스트 시작하기</button>
         </div>
     </div>
 
@@ -97,55 +86,12 @@
                 <button onclick="next(1, '여')">여</button>
             </div>
         </div>
-        <div id="q2" class="question-box">
-            <h2>2. 당신의 나이대는?</h2>
-            <div class="btn-list">
-                <button onclick="next(2, '20대')">20대</button>
-                <button onclick="next(2, '30대')">30대</button>
-                <button onclick="next(2, '40대')">40대</button>
-            </div>
-        </div>
-        <div id="q3" class="question-box">
-            <h2>3. 거주 지역은 어디입니까?</h2>
-            <div class="btn-list">
-                <button onclick="next(3, '서울/경기')">서울/경기</button>
-                <button onclick="next(3, '그 외 지역')">그 외 지역</button>
-                <button onclick="next(3, '해외')">해외</button>
-            </div>
-        </div>
-        <div id="q4" class="question-box">
-            <h2>4. 가장 우선시 하는 상대의 조건은?</h2>
-            <div class="btn-list">
-                <button onclick="next(4, '재력')">재력</button><button onclick="next(4, '외모')">외모</button>
-                <button onclick="next(4, '성격')">성격</button><button onclick="next(4, '직업')">직업</button>
-                <button onclick="next(4, '집안')">집안</button>
-            </div>
-        </div>
-        <div id="q5" class="question-box">
-            <h2>5. 결정사에 가장 기대하는 것은?</h2>
-            <div class="btn-list">
-                <button onclick="next(5, '다다익선')">최대한 많은 사람 소개</button>
-                <button onclick="next(5, '양보다 질')">엄선된 이상형 소개</button>
-                <button onclick="next(5, '케어')">매니저의 섬세한 케어</button>
-                <button onclick="next(5, '가격')">저렴한 가격</button>
-            </div>
-        </div>
-        <div id="q6" class="question-box">
-            <h2>6. 선호하는 진행 방식은?</h2>
-            <div class="btn-list">
-                <button onclick="next(6, '횟수제')">횟수제</button>
-                <button onclick="next(6, '기간제')">기간제</button>
-                <button onclick="next(6, '매칭당')">소개받을 때마다 지불</button>
-            </div>
-        </div>
-        <div id="q7" class="question-box">
-            <h2>7. 당신은 전문직 입니까?</h2>
-            <div class="btn-list">
-                <button onclick="next(7, '남전문')">남자 전문직</button>
-                <button onclick="next(7, '여전문')">여자 전문직</button>
-                <button onclick="next(7, '아님')">전문직 아님</button>
-            </div>
-        </div>
+        <div id="q2" class="question-box"><h2>2. 당신의 나이대는?</h2><div class="btn-list"><button onclick="next(2, '20대')">20대</button><button onclick="next(2, '30대')">30대</button><button onclick="next(2, '40대')">40대</button></div></div>
+        <div id="q3" class="question-box"><h2>3. 거주 지역은 어디입니까?</h2><div class="btn-list"><button onclick="next(3, '서울/경기')">서울/경기</button><button onclick="next(3, '그 외 지역')">그 외 지역</button><button onclick="next(3, '해외')">해외</button></div></div>
+        <div id="q4" class="question-box"><h2>4. 가장 우선시 하는 상대의 조건은?</h2><div class="btn-list"><button onclick="next(4, '재력')">재력</button><button onclick="next(4, '외모')">외모</button><button onclick="next(4, '성격')">성격</button><button onclick="next(4, '직업')">직업</button><button onclick="next(4, '집안')">집안</button></div></div>
+        <div id="q5" class="question-box"><h2>5. 결정사에 가장 기대하는 것은?</h2><div class="btn-list"><button onclick="next(5, '다다익선')">최대한 많은 사람 소개</button><button onclick="next(5, '양보다 질')">엄선된 이상형 소개</button><button onclick="next(5, '케어')">매니저의 섬세한 케어</button><button onclick="next(5, '가격')">저렴한 가격</button></div></div>
+        <div id="q6" class="question-box"><h2>6. 선호하는 진행 방식은?</h2><div class="btn-list"><button onclick="next(6, '횟수제')">횟수제</button><button onclick="next(6, '기간제')">기간제</button><button onclick="next(6, '매칭당')">소개받을 때마다 지불</button></div></div>
+        <div id="q7" class="question-box"><h2>7. 당신은 전문직 입니까?</h2><div class="btn-list"><button onclick="next(7, '남전문')">남자 전문직</button><button onclick="next(7, '여전문')">여자 전문직</button><button onclick="next(7, '아님')">전문직 아님</button></div></div>
         <div id="q8" class="question-box">
             <h2>8. 결정사 비용 수용 범위는?</h2>
             <div class="btn-list">
@@ -163,12 +109,13 @@
     </div>
 
     <div id="result" class="content-padding">
-        <h2 style="margin-top: 20px;">분석 결과, 당신과 맞는 곳은</h2>
+        <h2>분석 결과, 당신과 맞는 곳은</h2>
         <div class="result-name" id="agency-name"></div>
-        <p style="color: #888; font-size: 0.9rem; line-height: 1.5;">위 결과는 선택하신 답변을 바탕으로 한<br>가장 적합한 추천입니다.</p>
         <button class="retry-btn" onclick="location.reload()">다시 테스트하기</button>
     </div>
 </div>
+
+<div id="external-ad-area">AD BANNER (100px)</div>
 
 <script>
     let currentStep = 1;
@@ -177,6 +124,7 @@
     function startQuiz() {
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('quiz').style.display = 'block';
+        document.getElementById('external-ad-area').style.display = 'flex'; // 배너 표시
         showStep(1);
     }
 
@@ -186,27 +134,23 @@
         document.getElementById('progress').style.width = (step / 8) * 100 + '%';
         document.getElementById('nav-container').style.display = step > 1 ? 'flex' : 'none';
         currentStep = step;
-        window.scrollTo(0, 0); // 페이지 전환 시 상단으로 스크롤
+        window.scrollTo(0, 0);
     }
 
     function next(step, value) {
         answers['q' + step] = value;
-        if (step < 8) {
-            showStep(step + 1);
-        } else {
-            calculateResult();
-        }
+        if (step < 8) showStep(step + 1);
+        else calculateResult();
     }
 
-    function prev() {
-        if (currentStep > 1) showStep(currentStep - 1);
-    }
+    function prev() { if (currentStep > 1) showStep(currentStep - 1); }
 
     function calculateResult() {
         document.getElementById('quiz').style.display = 'none';
         document.getElementById('result').style.display = 'block';
+        document.getElementById('external-ad-area').style.display = 'flex'; // 결과페이지에서도 유지
+        
         let res = "";
-
         if (answers.q3 === '그 외 지역' || answers.q3 === '해외') res = "듀오";
         else if (answers.q7 === '남전문') {
             const pool = ['듀오', '가연', '노블마리아주', '우연', '바로연', '수현'];
