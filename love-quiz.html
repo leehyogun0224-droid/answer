@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연애 성향 테스트 - 당신의 연애 스타일은?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 16px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .answer-btn:hover {
+            background: #f1f3f5;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .answer-btn:active {
+            transform: scale(0.98);
+        }
+
+        .start-screen, .result-screen {
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .start-screen p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .start-btn, .restart-btn, .share-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-btn:hover, .restart-btn:hover, .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .result-screen {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .result-type {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .result-description {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .result-traits {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .trait {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .question {
+                font-size: 18px;
+            }
+
+            .result-type {
+                font-size: 28px;
+            }
+
+            .result-traits {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="start-screen">
+            <div class="header">
+                <h1>💕 연애 성향 테스트</h1>
+                <p>당신의 진짜 연애 스타일을 찾아보세요</p>
+            </div>
+            <h2>나는 어떤 연애를 할까?</h2>
+            <p>6개의 질문으로 알아보는<br>나의 연애 결정사 유형</p>
+            <button class="start-btn" onclick="startQuiz()">시작하기</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="header">
+                <h1>💕 연애 성향 테스트</h1>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="question-container">
+                <div class="question-number" id="questionNumber"></div>
+                <div class="question" id="question"></div>
+                <div class="answers" id="answers"></div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="hidden">
+            <div class="header">
+                <h1>💕 연애 성향 테스트</h1>
+            </div>
+            <div class="result-icon" id="resultIcon"></div>
+            <div class="result-type" id="resultType"></div>
+            <div class="result-description" id="resultDescription"></div>
+            <div class="result-traits" id="resultTraits"></div>
+            <div class="buttons">
+                <button class="restart-btn" onclick="restartQuiz()">다시 하기</button>
+                <button class="share-btn" onclick="shareResult()">결과 공유</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "이상형과 첫 데이트를 한다면?",
+                answers: [
+                    { text: "분위기 좋은 레스토랑에서 로맨틱하게", type: "passionate" },
+                    { text: "카페에서 편하게 대화하며", type: "stable" },
+                    { text: "각자 하고 싶은 걸 하다가 만나기", type: "free" },
+                    { text: "미리 계획한 코스대로 효율적으로", type: "realistic" }
+                ]
+            },
+            {
+                question: "연인과 의견이 다를 때 나는?",
+                answers: [
+                    { text: "감정을 솔직하게 표현하며 대화한다", type: "passionate" },
+                    { text: "차분히 서로의 입장을 이해하려 한다", type: "stable" },
+                    { text: "각자의 의견을 존중하고 타협점을 찾는다", type: "free" },
+                    { text: "논리적으로 분석해서 최선의 답을 찾는다", type: "realistic" }
+                ]
+            },
+            {
+                question: "연인에게 가장 중요한 것은?",
+                answers: [
+                    { text: "뜨거운 사랑과 설렘", type: "passionate" },
+                    { text: "믿음과 안정감", type: "stable" },
+                    { text: "서로의 자유와 공간 존중", type: "free" },
+                    { text: "현실적인 미래 계획", type: "realistic" }
+                ]
+            },
+            {
+                question: "기념일에 받고 싶은 선물은?",
+                answers: [
+                    { text: "정성 가득한 손편지와 꽃다발", type: "passionate" },
+                    { text: "오래 간직할 수 있는 의미 있는 물건", type: "stable" },
+                    { text: "함께 체험할 수 있는 활동이나 여행", type: "free" },
+                    { text: "필요했던 실용적인 물건", type: "realistic" }
+                ]
+            },
+            {
+                question: "연애 중 힘들 때 나는?",
+                answers: [
+                    { text: "연인과 감정을 나누며 위로받고 싶다", type: "passionate" },
+                    { text: "연인의 따뜻한 지지가 필요하다", type: "stable" },
+                    { text: "혼자만의 시간으로 재충전한다", type: "free" },
+                    { text: "문제를 분석하고 해결책을 찾는다", type: "realistic" }
+                ]
+            },
+            {
+                question: "이상적인 주말 데이트는?",
+                answers: [
+                    { text: "영화 보고 분위기 있는 곳에서 저녁 식사", type: "passionate" },
+                    { text: "집에서 함께 요리하고 영화 보기", type: "stable" },
+                    { text: "각자 하고 싶은 일 하다가 저녁에 만나기", type: "free" },
+                    { text: "생산적인 활동이나 취미 생활 함께하기", type: "realistic" }
+                ]
+            }
+        ];
+
+        const results = {
+            passionate: {
+                icon: "🔥",
+                type: "열정형",
+                description: "당신은 뜨겁고 로맨틱한 사랑을 추구하는 열정형입니다. 감정 표현이 솔직하고 사랑에 적극적이에요. 설렘과 감동을 중요하게 생각하며, 연인과의 감정적 교감을 가장 소중히 여깁니다.",
+                traits: ["감정 표현 풍부", "로맨틱 추구", "적극적 애정표현", "감성적 교감 중시"]
+            },
+            stable: {
+                icon: "🌿",
+                type: "안정형",
+                description: "당신은 신뢰와 안정감을 중시하는 안정형입니다. 차분하고 따뜻한 사랑을 추구하며, 연인과의 깊은 유대감을 쌓는 것을 중요하게 생각해요. 오래도록 함께할 수 있는 관계를 꿈꿉니다.",
+                traits: ["신뢰 중시", "차분한 성격", "깊은 유대감", "장기적 관계 지향"]
+            },
+            free: {
+                icon: "🦋",
+                type: "자유형",
+                description: "당신은 독립적이고 여유로운 관계를 선호하는 자유형입니다. 서로의 개성과 공간을 존중하며, 건강한 거리감을 유지하는 것이 중요해요. 각자의 성장을 응원하는 성숙한 연애를 추구합니다.",
+                traits: ["독립성 존중", "개인 공간 중시", "성숙한 관계", "자유로운 교제"]
+            },
+            realistic: {
+                icon: "💼",
+                type: "현실형",
+                description: "당신은 실용적이고 계획적인 연애를 하는 현실형입니다. 감정도 중요하지만 현실적인 조건과 미래 계획도 함께 고려해요. 효율적이고 합리적인 관계 유지를 추구하며, 구체적인 목표가 있는 연애를 선호합니다.",
+                traits: ["계획적 연애", "현실적 사고", "효율성 중시", "미래 지향적"]
+            }
+        };
+
+        let currentQuestion = 0;
+        let scores = {
+            passionate: 0,
+            stable: 0,
+            free: 0,
+            realistic: 0
+        };
+
+        function startQuiz() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('questionNumber').textContent = `질문 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('question').textContent = question.question;
+            
+            const answersContainer = document.getElementById('answers');
+            answersContainer.innerHTML = '';
+            
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-btn';
+                button.textContent = answer.text;
+                button.onclick = () => selectAnswer(answer.type);
+                answersContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(type) {
+            scores[type]++;
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const resultType = Object.keys(scores).reduce((a, b) => 
+                scores[a] > scores[b] ? a : b
+            );
+            
+            const result = results[resultType];
+            
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            document.getElementById('resultIcon').textContent = result.icon;
+            document.getElementById('resultType').textContent = result.type;
+            document.getElementById('resultDescription').textContent = result.description;
+            
+            const traitsContainer = document.getElementById('resultTraits');
+            traitsContainer.innerHTML = '';
+            result.traits.forEach(trait => {
+                const div = document.createElement('div');
+                div.className = 'trait';
+                div.textContent = '✓ ' + trait;
+                traitsContainer.appendChild(div);
+            });
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            scores = {
+                passionate: 0,
+                stable: 0,
+                free: 0,
+                realistic: 0
+            };
+            
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+
+        function shareResult() {
+            const resultType = document.getElementById('resultType').textContent;
+            const text = `나의 연애 성향은 "${resultType}"! 당신의 연애 스타일은? 💕`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: '연애 성향 테스트',
+                    text: text,
+                    url: window.location.href
+                }).catch(() => {
+                    copyToClipboard(text);
+                });
+            } else {
+                copyToClipboard(text);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text + ' ' + window.location.href;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('결과가 클립보드에 복사되었습니다!');
+        }
+    </script>
+</body>
+</html>
